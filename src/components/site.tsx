@@ -15,7 +15,7 @@ export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
 
 function Brand() {
   return (
-    <Link to="/" className="flex items-center gap-2.5 font-semibold tracking-tight text-foreground">
+    <Link to="/" className="flex items-center gap-2.5 font-display font-bold tracking-tight text-foreground">
       <LogoMark />
       <span className="text-lg">AzureBlaze</span>
     </Link>
@@ -38,7 +38,7 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border">
+    <footer className="border-t border-border bg-surface">
       <div className="container-site flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <Brand />
@@ -66,10 +66,10 @@ export function SiteFooter() {
 export function ButtonLink({
   hash, children, variant = "primary",
 }: { hash: string; children: React.ReactNode; variant?: "primary" | "ghost" }) {
-  const base = "inline-flex h-12 items-center justify-center rounded-lg px-6 text-sm font-medium transition-colors";
+  const base = "inline-flex h-12 items-center justify-center rounded-lg px-6 text-xs font-medium uppercase tracking-wider transition-colors";
   const v =
     variant === "primary"
       ? "bg-primary text-primary-foreground hover:bg-primary-hover"
-      : "border border-border text-foreground hover:bg-card";
+      : "border border-input text-foreground hover:bg-card";
   return <Link to="/" hash={hash} className={`${base} ${v}`}>{children}</Link>;
 }
