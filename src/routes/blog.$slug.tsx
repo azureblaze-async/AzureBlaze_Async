@@ -84,7 +84,7 @@ function Article() {
         <article className="mx-auto max-w-[700px]">
           <header>
             <p className="text-eyebrow flex items-center gap-2 text-primary"><span className="eyebrow-dot" aria-hidden="true" />{post.category}</p>
-            <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">{post.title}</h1>
+            <h1 className="mt-4 text-3xl font-extrabold leading-snug tracking-normal text-foreground sm:text-4xl">{post.title}</h1>
             <p className="text-lead mt-5 text-muted-foreground">{post.description}</p>
             <p className="mt-6 text-sm text-subtle">
               <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>

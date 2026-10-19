@@ -15,7 +15,7 @@ export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
 
 function Brand() {
   return (
-    <Link to="/" className="flex items-center gap-2.5 font-display font-bold tracking-tight text-foreground">
+    <Link to="/" className="flex items-center gap-2.5 font-display font-bold tracking-normal text-foreground">
       <LogoMark />
       <span className="text-lg">AzureBlaze</span>
     </Link>
