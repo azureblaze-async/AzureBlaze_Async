@@ -1,3 +1,4 @@
+import logo from "@/assets/blaze-logo.png.asset.json";
 import { Link } from "@tanstack/react-router";
 
 export const SITE = {
@@ -8,19 +9,14 @@ export const SITE = {
   socials: [] as { label: string; href: string }[], // add verified profile URLs here
 };
 
-export function LogoMark({ className = "h-7 w-7" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
-      <path d="M16 3 L29 29 H22.5 L16 15.5 L9.5 29 H3 Z" fill="currentColor" />
-      <path d="M12.2 23 H19.8 L18.4 20 H13.6 Z" fill="currentColor" opacity="0.55" />
-    </svg>
-  );
+export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
+  return <img src={logo.url} alt="" width={32} height={32} className={className} />;
 }
 
 function Brand() {
   return (
     <Link to="/" className="flex items-center gap-2.5 font-semibold tracking-tight text-foreground">
-      <span className="text-primary"><LogoMark /></span>
+      <LogoMark />
       <span className="text-lg">AzureBlaze</span>
     </Link>
   );
