@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import heroBg from "@/assets/web-page-background.png.asset.json";
-import { ButtonLink, SiteFooter, SiteHeader } from "@/components/site";
+import { ButtonLink, SITE, SiteFooter, SiteHeader } from "@/components/site";
 import { formatDate, posts } from "@/lib/posts";
 
 export const Route = createFileRoute("/")({
@@ -114,6 +114,19 @@ function Index() {
           <div className="container-site summary-box px-6 py-14 text-center">
             <h2 className="text-section mx-auto max-w-2xl text-foreground">Better systems begin with better questions.</h2>
             <p className="text-lead mt-4 text-muted-foreground">Keep questioning. Keep exploring. Keep building.</p>
+            <nav aria-label="Social links" className="mt-8 flex flex-wrap justify-center gap-2">
+              {SITE.socials.map((s) => (
+                <a
+                  key={s.href}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tag-chip transition-colors hover:border-primary-line hover:text-foreground"
+                >
+                  {s.label} <span className="sr-only">(opens in new tab)</span>
+                </a>
+              ))}
+            </nav>
             <p className="text-eyebrow mt-8 text-primary">Question. Build. Evolve.</p>
           </div>
         </section>

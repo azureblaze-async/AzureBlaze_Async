@@ -6,7 +6,14 @@ export const SITE = {
   tagline: "Question. Build. Evolve.",
   description:
     "AzureBlaze is an anonymous builder exploring technology, engineering, and the systems shaping our world.",
-  socials: [] as { label: string; href: string }[], // add verified profile URLs here
+  socials: [
+    { label: "GitHub", href: "https://github.com/azureblaze-async" },
+    { label: "Instagram", href: "https://www.instagram.com/azureblazesince2022/" },
+    { label: "X", href: "https://x.com/azureblazeasync" },
+    { label: "Reddit", href: "https://www.reddit.com/user/Strict-Big-9235/" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/azure-blaze-b59a2b41a/" },
+    { label: "Product Hunt", href: "https://www.producthunt.com/@azure_blaze" },
+  ],
 };
 
 export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
