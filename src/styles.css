@@ -42,7 +42,7 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(0.14 0.007 270);   /* #0a0b0f */
+  --background: oklch(0 0 0);              /* pure black #000000 */
   --surface: oklch(0.18 0.009 265);      /* #111318 */
   --foreground: oklch(0.94 0.008 270);   /* #e8eaf0 */
   --card: oklch(0.21 0.011 265);         /* #181b22 */
