@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import hero from "@/assets/hero-character.jpg";
+import heroBg from "@/assets/web-page-background.png.asset.json";
 import { ButtonLink, SiteFooter, SiteHeader } from "@/components/site";
 import { formatDate, posts } from "@/lib/posts";
 
