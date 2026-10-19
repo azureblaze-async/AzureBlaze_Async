@@ -7,10 +7,8 @@ type Row = {
   published_at: string; updated_at: string; seo_title: string | null;
   seo_description: string | null; social_image_path: string | null; content_markdown?: string;
 };
-function configuration() {
-  // Dedicated names avoid accidentally querying the newly provisioned Cloud database.
-  const url = process.env['AZUREBLAZE_BLOG_URL'] ?? (process.env['SUPABASE_ANON_KEY'] ? process.env['SUPABASE_URL'] : undefined);
-  const key = process.env['AZUREBLAZE_BLOG_PUBLIC_KEY'] ?? process.env['SUPABASE_ANON_KEY'];
+export type BlogConnection = { url: string | undefined; key: string | undefined };
+function configuration({ url, key }: BlogConnection) {
   if (!url || !key) throw new Error('Blog connection is not configured');
   const parsed = new URL(url);
   if (parsed.protocol !== 'https:') throw new Error('Blog connection requires HTTPS');
@@ -23,8 +21,8 @@ function configuration() {
   }
   return { base: url.replace(/\/$/, ''), key };
 }
-async function query(params: URLSearchParams): Promise<{ rows: Row[]; base: string }> {
-  const { base, key } = configuration();
+async function query(connection: BlogConnection, params: URLSearchParams): Promise<{ rows: Row[]; base: string }> {
+  const { base, key } = configuration(connection);
   params.set('status', 'eq.published');
   const headers = new Headers({ apikey: key });
   if (!key.startsWith('sb_')) headers.set('Authorization', `Bearer ${key}`);
@@ -43,18 +41,18 @@ function summary(row: Row, base: string): PostSummary {
     seoTitle: row.seo_title || row.title, seoDescription: row.seo_description || row.excerpt || '',
   };
 }
-export async function listPublishedPosts(): Promise<PostSummary[]> {
+export async function listPublishedPosts(connection: BlogConnection): Promise<PostSummary[]> {
   const posts: PostSummary[] = [];
   // Page through all published rows so the count and sitemap aren't silently truncated.
   for (let offset = 0; ; offset += 1000) {
-    const { rows, base } = await query(new URLSearchParams({ select: LIST_COLS, order: 'published_at.desc,slug.asc', limit: '1000', offset: String(offset) }));
+    const { rows, base } = await query(connection, new URLSearchParams({ select: LIST_COLS, order: 'published_at.desc,slug.asc', limit: '1000', offset: String(offset) }));
     posts.push(...rows.map(row => summary(row, base)));
     if (rows.length < 1000) return posts;
   }
 }
-export async function getPublishedPost(slug: string): Promise<Post | null> {
+export async function getPublishedPost(slug: string, connection: BlogConnection): Promise<Post | null> {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return null;
-  const { rows, base } = await query(new URLSearchParams({ select: `${LIST_COLS},content_markdown`, slug: `eq.${slug}`, limit: '1' }));
+  const { rows, base } = await query(connection, new URLSearchParams({ select: `${LIST_COLS},content_markdown`, slug: `eq.${slug}`, limit: '1' }));
   const row = rows[0];
   if (!row) return null;
   const content = row.content_markdown ?? '';
