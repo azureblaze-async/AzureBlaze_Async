@@ -11,17 +11,21 @@ describe('Published-only database reader', () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify([row])));
     vi.stubGlobal('fetch', fetchMock);
     const posts = await listPublishedPosts(connection);
-    const [url, init] = fetchMock.mock.calls[0];
+    const call = fetchMock.mock.calls[0];
+    if (!call) throw new Error("Expected a database request");
+    const [url, init] = call;
     expect(new URL(url).searchParams.get('status')).toBe('eq.published');
     expect(new URL(url).searchParams.get('select')).not.toContain('content_markdown');
     expect(init.headers.get('Authorization')).toBeNull();
-    expect(posts[0].slug).toBe('published-post');
+    expect(posts[0]?.slug).toBe('published-post');
   });
   it('restricts direct slug reads to published posts and returns null for invisible rows', async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response('[]'));
     vi.stubGlobal('fetch', fetchMock);
     expect(await getPublishedPost('draft-post', connection)).toBeNull();
-    const params = new URL(fetchMock.mock.calls[0][0]).searchParams;
+    const call = fetchMock.mock.calls[0];
+    if (!call) throw new Error("Expected a database request");
+    const params = new URL(call[0]).searchParams;
     expect(params.get('status')).toBe('eq.published');
     expect(params.get('slug')).toBe('eq.draft-post');
   });

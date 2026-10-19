@@ -3,8 +3,8 @@ import { createServerFn } from '@tanstack/react-start';
 export const listPosts = createServerFn({ method: 'GET' }).handler(async () => {
   try {
     const connection = {
-      url: process.env['AZUREBLAZE_BLOG_URL'] ?? (process.env['SUPABASE_ANON_KEY'] ? process.env['SUPABASE_URL'] : import.meta.env.VITE_SUPABASE_ANON_KEY ? import.meta.env.VITE_SUPABASE_URL : undefined),
-      key: process.env['AZUREBLAZE_BLOG_PUBLIC_KEY'] ?? process.env['SUPABASE_ANON_KEY'] ?? import.meta.env.VITE_SUPABASE_ANON_KEY,
+      url: process.env['AZUREBLAZE_BLOG_URL'] ?? (process.env['SUPABASE_ANON_KEY'] ? process.env['SUPABASE_URL'] : import.meta.env['VITE_SUPABASE_ANON_KEY'] ? import.meta.env['VITE_SUPABASE_URL'] : undefined),
+      key: process.env['AZUREBLAZE_BLOG_PUBLIC_KEY'] ?? process.env['SUPABASE_ANON_KEY'] ?? import.meta.env['VITE_SUPABASE_ANON_KEY'],
     };
 
     const { listPublishedPosts } = await import('./posts.server');
@@ -21,8 +21,8 @@ export const readPost = createServerFn({ method: 'GET' })
   .handler(async ({ data }) => {
     try {
     const connection = {
-      url: process.env['AZUREBLAZE_BLOG_URL'] ?? (process.env['SUPABASE_ANON_KEY'] ? process.env['SUPABASE_URL'] : import.meta.env.VITE_SUPABASE_ANON_KEY ? import.meta.env.VITE_SUPABASE_URL : undefined),
-      key: process.env['AZUREBLAZE_BLOG_PUBLIC_KEY'] ?? process.env['SUPABASE_ANON_KEY'] ?? import.meta.env.VITE_SUPABASE_ANON_KEY,
+      url: process.env['AZUREBLAZE_BLOG_URL'] ?? (process.env['SUPABASE_ANON_KEY'] ? process.env['SUPABASE_URL'] : import.meta.env['VITE_SUPABASE_ANON_KEY'] ? import.meta.env['VITE_SUPABASE_URL'] : undefined),
+      key: process.env['AZUREBLAZE_BLOG_PUBLIC_KEY'] ?? process.env['SUPABASE_ANON_KEY'] ?? import.meta.env['VITE_SUPABASE_ANON_KEY'],
     };
       const { getPublishedPost, listPublishedPosts } = await import('./posts.server');
       const post = await getPublishedPost(data.slug, connection);

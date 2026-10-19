@@ -7,8 +7,8 @@ export const Route = createFileRoute("/sitemap.xml")({
       GET: async ({ request }) => {
         const { listPublishedPosts } = await import("@/lib/posts.server");
         const connection = {
-          url: process.env["AZUREBLAZE_BLOG_URL"] ?? (process.env["SUPABASE_ANON_KEY"] ? process.env["SUPABASE_URL"] : import.meta.env.VITE_SUPABASE_ANON_KEY ? import.meta.env.VITE_SUPABASE_URL : undefined),
-          key: process.env["AZUREBLAZE_BLOG_PUBLIC_KEY"] ?? process.env["SUPABASE_ANON_KEY"] ?? import.meta.env.VITE_SUPABASE_ANON_KEY,
+          url: process.env["AZUREBLAZE_BLOG_URL"] ?? (process.env["SUPABASE_ANON_KEY"] ? process.env["SUPABASE_URL"] : import.meta.env['VITE_SUPABASE_ANON_KEY'] ? import.meta.env['VITE_SUPABASE_URL'] : undefined),
+          key: process.env["AZUREBLAZE_BLOG_PUBLIC_KEY"] ?? process.env["SUPABASE_ANON_KEY"] ?? import.meta.env['VITE_SUPABASE_ANON_KEY'],
         };
         const escapeXml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
         let posts;
