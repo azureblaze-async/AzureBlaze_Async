@@ -3,27 +3,37 @@ import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { SiteFooter, SiteHeader } from "@/components/site";
-import { formatDate, getPost, posts } from "@/lib/posts";
+import { formatDate } from "@/lib/posts";
+import { postQuery } from "@/lib/posts.queries";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
-    const post = getPost(params.slug);
-    if (!post) throw notFound();
-    return { post };
+  loader: async ({ params, context }) => {
+    const result = await context.queryClient.ensureQueryData(postQuery(params.slug));
+    if (!result.error && !result.post) throw notFound();
+    return result;
   },
   head: ({ loaderData }) => {
     const p = loaderData?.post;
-    if (!p) return { meta: [{ title: "Article not found — AzureBlaze" }, { name: "robots", content: "noindex" }] };
+    if (!p) return { meta: [
+      { title: "Article unavailable — AzureBlaze" }, { name: "robots", content: "noindex" },
+      { name: "description", content: "This AzureBlaze article is unavailable." },
+      { property: "og:title", content: "Article unavailable — AzureBlaze" },
+      { property: "og:description", content: "This AzureBlaze article is unavailable." },
+      { property: "og:type", content: "article" }, { name: "twitter:card", content: "summary" },
+    ] };
     return {
       meta: [
-        { title: `${p.title} — AzureBlaze` },
-        { name: "description", content: p.description },
-        { property: "og:title", content: p.title },
-        { property: "og:description", content: p.description },
+        { title: `${p.seoTitle} — AzureBlaze` },
+        { name: "description", content: p.seoDescription },
+        { property: "og:title", content: p.seoTitle },
+        { property: "og:description", content: p.seoDescription },
         { property: "og:type", content: "article" },
         { property: "article:published_time", content: p.publishedAt },
         ...(p.updatedAt ? [{ property: "article:modified_time", content: p.updatedAt }] : []),
         { name: "twitter:card", content: "summary_large_image" },
+        ...(p.socialUrl ? [{ property: "og:image", content: p.socialUrl }, { name: "twitter:image", content: p.socialUrl }] : []),
       ],
       scripts: [{
         type: "application/ld+json",
@@ -55,7 +65,8 @@ export const Route = createFileRoute("/blog/$slug")({
 function ShareButton({ title }: { title: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <button
+    <Button
+      variant="outline"
       type="button"
       onClick={async () => {
         const url = window.location.href;
@@ -70,13 +81,14 @@ function ShareButton({ title }: { title: string }) {
       className="rounded-lg border border-border px-4 py-2 text-sm text-foreground transition-colors hover:bg-card"
     >
       {copied ? "Link copied" : "Share"}
-    </button>
+    </Button>
   );
 }
 
 function Article() {
-  const { post } = Route.useLoaderData();
-  const related = posts.filter((p) => p.slug !== post.slug).slice(0, 2);
+  const { slug } = Route.useParams();
+  const { data: { post, related, error } } = useSuspenseQuery(postQuery(slug));
+  if (!post) return <><SiteHeader /><main className="container-site py-32 text-center"><h1 className="text-section">Article unavailable</h1><p role="status" className="mt-6 text-muted-foreground">{error}</p><Link to="/" hash="writing" className="mt-6 inline-block text-primary">← Back to writing</Link></main><SiteFooter /></>;
   return (
     <>
       <SiteHeader />
@@ -92,8 +104,9 @@ function Article() {
               {" "}· {post.readingTime} min read
             </p>
           </header>
+          {post.coverUrl && <img src={post.coverUrl} alt={post.coverAlt} className="mt-10 aspect-video w-full rounded-lg object-cover" />}
           <div className="prose-article mt-12 border-t border-border pt-10">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
+            <ReactMarkdown skipHtml remarkPlugins={[remarkGfm]} components={{ h1: ({ children }) => <h2>{children}</h2>, img: ({ src, alt }) => <img src={src} alt={alt ?? ""} loading="lazy" />, a: ({ href, children }) => <a href={href} {...(href?.startsWith("https://") ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{children}</a> }}>{post.content}</ReactMarkdown>
           </div>
           <div className="mt-14 flex items-center justify-between border-t border-border pt-8">
             <Link to="/" hash="writing" className="text-sm text-primary hover:text-primary-hover">← Back to writing</Link>
@@ -107,7 +120,7 @@ function Article() {
                   <li key={r.slug}>
                     <Link to="/blog/$slug" params={{ slug: r.slug }} className="block rounded-xl border border-border bg-surface p-5 transition-colors hover:bg-card">
                       <span className="font-medium text-foreground">{r.title}</span>
-                      <span className="mt-1 block text-sm text-subtle">{r.readingTime} min read</span>
+                      <span className="mt-1 block text-sm text-subtle">{formatDate(r.publishedAt)}</span>
                     </Link>
                   </li>
                 ))}
