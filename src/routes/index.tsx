@@ -121,9 +121,11 @@ function Index() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="tag-chip transition-colors hover:border-primary-line hover:text-foreground"
+                  aria-label={s.label}
+                  className="flex h-10 w-10 items-center justify-center rounded-lg border border-input bg-surface text-muted-foreground transition-colors hover:border-primary-line hover:text-primary"
                 >
-                  {s.label} <span className="sr-only">(opens in new tab)</span>
+                  <s.Icon size={17} aria-hidden="true" />
+                  <span className="sr-only"> (opens in new tab)</span>
                 </a>
               ))}
             </nav>

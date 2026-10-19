@@ -1,5 +1,13 @@
 import logo from "@/assets/blaze-logo.png.asset.json";
 import { Link } from "@tanstack/react-router";
+import {
+  FaGithub,
+  FaInstagram,
+  FaLinkedin,
+  FaProductHunt,
+  FaReddit,
+  FaXTwitter,
+} from "react-icons/fa6";
 
 export const SITE = {
   name: "AzureBlaze",
@@ -7,12 +15,12 @@ export const SITE = {
   description:
     "AzureBlaze is an anonymous builder exploring technology, engineering, and the systems shaping our world.",
   socials: [
-    { label: "GitHub", href: "https://github.com/azureblaze-async" },
-    { label: "Instagram", href: "https://www.instagram.com/azureblazesince2022/" },
-    { label: "X", href: "https://x.com/azureblazeasync" },
-    { label: "Reddit", href: "https://www.reddit.com/user/Strict-Big-9235/" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/in/azure-blaze-b59a2b41a/" },
-    { label: "Product Hunt", href: "https://www.producthunt.com/@azure_blaze" },
+    { label: "GitHub", href: "https://github.com/azureblaze-async", Icon: FaGithub },
+    { label: "Instagram", href: "https://www.instagram.com/azureblazesince2022/", Icon: FaInstagram },
+    { label: "X", href: "https://x.com/azureblazeasync", Icon: FaXTwitter },
+    { label: "Reddit", href: "https://www.reddit.com/user/Strict-Big-9235/", Icon: FaReddit },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/azure-blaze-b59a2b41a/", Icon: FaLinkedin },
+    { label: "Product Hunt", href: "https://www.producthunt.com/@azure_blaze", Icon: FaProductHunt },
   ],
 };
 
@@ -51,13 +59,20 @@ export function SiteFooter() {
           <Brand />
           <p className="text-sm text-subtle">{SITE.tagline}</p>
         </div>
-        <div className="flex flex-col gap-2 text-sm text-subtle sm:items-end">
+        <div className="flex flex-col gap-3 text-sm text-subtle sm:items-end">
           {SITE.socials.length > 0 && (
-            <ul className="flex gap-4">
+            <ul className="flex gap-2">
               {SITE.socials.map((s) => (
                 <li key={s.href}>
-                  <a href={s.href} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
-                    {s.label} <span className="sr-only">(opens in new tab)</span>↗
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.label}
+                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-primary-line hover:text-primary"
+                  >
+                    <s.Icon size={15} aria-hidden="true" />
+                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </li>
               ))}
