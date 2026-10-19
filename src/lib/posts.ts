@@ -29,28 +29,28 @@ export function readingTime(text: string) {
 export function parsePost(raw: string, file = "article"): Post {
   const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
   if (!m) throw new Error(`${file}: missing frontmatter`);
-  const data: Record<string, string> = {};
-  for (const line of m[1].split(/\r?\n/)) {
+  const data: { [k: string]: string } & Partial<Record<"title"|"slug"|"description"|"category"|"publishedAt"|"published"|"updatedAt"|"tags", string>> = {};
+  for (const line of (m[1] ?? "").split(/\r?\n/)) {
     const i = line.indexOf(":");
     if (i > 0) data[line.slice(0, i).trim()] = line.slice(i + 1).trim().replace(/^["']|["']$/g, "");
   }
   for (const k of ["title", "slug", "description", "category", "publishedAt", "published"]) {
-    if (!data[k]) throw new Error(`${file}: missing required field "${k}"`);
+    if (!(data as Record<string,string>)[k]) throw new Error(`${file}: missing required field "${k}"`);
   }
-  if (!SLUG_RE.test(data.slug)) throw new Error(`${file}: invalid slug "${data.slug}"`);
+  if (!SLUG_RE.test(data.slug!)) throw new Error(`${file}: invalid slug "${data.slug}"`);
   if (data.published !== "true" && data.published !== "false")
     throw new Error(`${file}: "published" must be true or false`);
   for (const k of ["publishedAt", "updatedAt"]) {
-    if (data[k] && isNaN(Date.parse(data[k]))) throw new Error(`${file}: invalid date "${k}"`);
+    const v = (data as Record<string,string>)[k]; if (v && isNaN(Date.parse(v))) throw new Error(`${file}: invalid date "${k}"`);
   }
-  const content = m[2].trim();
+  const content = (m[2] ?? "").trim();
   if (!content) throw new Error(`${file}: empty content`);
   return {
-    title: data.title,
-    slug: data.slug,
-    description: data.description,
-    category: data.category,
-    publishedAt: data.publishedAt,
+    title: data.title!,
+    slug: data.slug!,
+    description: data.description!,
+    category: data.category!,
+    publishedAt: data.publishedAt!,
     updatedAt: data.updatedAt || undefined,
     published: data.published === "true",
     tags: data.tags ? data.tags.split(",").map((t) => t.trim()) : undefined,
