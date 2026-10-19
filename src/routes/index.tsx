@@ -22,31 +22,30 @@ function Index() {
     <>
       <SiteHeader />
       <main>
-        <section className="container-site grid items-center gap-12 py-14 lg:grid-cols-[1.1fr_0.9fr] lg:py-20">
-          <div>
+        <section className="relative isolate overflow-hidden">
+          <div className="absolute inset-0 -z-10" aria-hidden="true">
+            <img
+              src={heroBg.url}
+              alt=""
+              fetchPriority="high"
+              className="h-full w-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-black/30" />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-transparent to-background" />
+          </div>
+          <div className="container-site flex flex-col items-center py-20 text-center lg:py-28">
             <p className="text-eyebrow flex items-center gap-2 text-primary"><span className="eyebrow-dot" aria-hidden="true" />Anonymous builder · Technology · Ideas</p>
-            <h1 className="text-hero mt-5 text-foreground">The future isn't a limit. It's a <span className="text-primary">question.</span></h1>
+            <h1 className="text-hero mt-5 max-w-3xl text-foreground">The future isn't a limit. It's a <span className="text-primary">question.</span></h1>
             <p className="text-lead mt-6 max-w-xl text-muted-foreground">
               Question accepted limitations. Explore what technology could become. Build what doesn't exist yet.
             </p>
-            <div className="mt-9 flex flex-wrap gap-3">
+            <div className="mt-9 flex flex-wrap justify-center gap-3">
               <ButtonLink hash="writing">Explore the writing</ButtonLink>
               <ButtonLink hash="about" variant="ghost">About AzureBlaze</ButtonLink>
             </div>
-            <div className="mt-8 flex flex-wrap gap-2">
+            <div className="mt-8 flex flex-wrap justify-center gap-2">
               {["Technology", "Engineering", "Systems", "Ideas"].map((t) => <span key={t} className="tag-chip">{t}</span>)}
             </div>
-          </div>
-          <div className="relative mx-auto w-full max-w-md">
-            <div className="glow-azure absolute inset-0 -z-10 scale-110" aria-hidden="true" />
-            <img
-              src={hero}
-              width={1024}
-              height={1280}
-              fetchPriority="high"
-              alt="Anonymous AzureBlaze figure in a black cap and dark glasses, lit by blue rim light"
-              className="h-auto w-full rounded-2xl"
-            />
           </div>
         </section>
 
