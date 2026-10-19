@@ -22,7 +22,7 @@ function Index() {
     <>
       <SiteHeader />
       <main>
-        <section className="relative isolate overflow-hidden">
+        <section className="relative isolate flex min-h-[calc(100svh-4rem)] items-center overflow-hidden">
           <div className="absolute inset-0 -z-10" aria-hidden="true">
             <img
               src={heroBg.url}
@@ -33,7 +33,7 @@ function Index() {
             <div className="absolute inset-0 bg-black/30" />
             <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-transparent to-background" />
           </div>
-          <div className="container-site flex flex-col items-center py-20 text-center lg:py-28">
+          <div className="container-site flex w-full flex-col items-center py-20 text-center lg:py-28">
             <p className="text-eyebrow flex items-center gap-2 text-primary"><span className="eyebrow-dot" aria-hidden="true" />Anonymous builder · Technology · Ideas</p>
             <h1 className="text-hero mt-5 max-w-3xl text-foreground">The future isn't a limit. It's a <span className="text-primary">question.</span></h1>
             <p className="text-lead mt-6 max-w-xl text-muted-foreground">
