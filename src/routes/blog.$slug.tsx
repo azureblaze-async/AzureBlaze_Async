@@ -83,9 +83,9 @@ function Article() {
       <main className="container-site py-16 lg:py-24">
         <article className="mx-auto max-w-[700px]">
           <header>
-            <p className="text-eyebrow text-primary">{post.category}</p>
-            <h1 className="mt-4 text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">{post.title}</h1>
-            <p className="mt-5 text-lg text-muted-foreground">{post.description}</p>
+            <p className="text-eyebrow flex items-center gap-2 text-primary"><span className="eyebrow-dot" aria-hidden="true" />{post.category}</p>
+            <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">{post.title}</h1>
+            <p className="text-lead mt-5 text-muted-foreground">{post.description}</p>
             <p className="mt-6 text-sm text-subtle">
               <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
               {post.updatedAt && <> · Updated <time dateTime={post.updatedAt}>{formatDate(post.updatedAt)}</time></>}
@@ -105,7 +105,7 @@ function Article() {
               <ul className="mt-4 grid gap-4">
                 {related.map((r) => (
                   <li key={r.slug}>
-                    <Link to="/blog/$slug" params={{ slug: r.slug }} className="block rounded-xl border border-border bg-card p-5 transition-colors hover:bg-elevated">
+                    <Link to="/blog/$slug" params={{ slug: r.slug }} className="block rounded-xl border border-border bg-surface p-5 transition-colors hover:bg-card">
                       <span className="font-medium text-foreground">{r.title}</span>
                       <span className="mt-1 block text-sm text-subtle">{r.readingTime} min read</span>
                     </Link>

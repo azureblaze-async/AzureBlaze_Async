@@ -88,7 +88,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&display=swap" },
       {
         rel: "stylesheet",
         href: appCss,
@@ -118,11 +118,27 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  useEffect(() => {
+    const run = () => {
+      const io = new IntersectionObserver(
+        (es) => es.forEach((e) => e.isIntersecting && e.target.classList.add("visible")),
+        { threshold: 0.06 },
+      );
+      document.querySelectorAll(".fade-in:not(.visible)").forEach((el) => io.observe(el));
+      return io;
+    };
+    let io = run();
+    const unsub = router.subscribe("onResolved", () => { io.disconnect(); setTimeout(() => (io = run()), 0); });
+    return () => { io.disconnect(); unsub(); };
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="relative z-10">
+        <Outlet />
+      </div>
     </QueryClientProvider>
   );
 }
