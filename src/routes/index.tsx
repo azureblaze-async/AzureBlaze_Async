@@ -94,7 +94,7 @@ function Index() {
                 {posts.map((p) => (
                   <li key={p.slug} className="group relative flex flex-col rounded-xl border border-border bg-surface p-7 transition-colors hover:border-primary-line hover:bg-card">
                     <p className="text-eyebrow text-primary">{p.category}</p>
-                    <h3 className="mt-3 text-xl font-semibold leading-snug tracking-tight text-foreground">
+                    <h3 className="mt-3 text-lg font-semibold leading-snug tracking-normal text-foreground">
                       <Link to="/blog/$slug" params={{ slug: p.slug }} className="after:absolute after:inset-0 after:rounded-xl">
                         {p.title}
                       </Link>
