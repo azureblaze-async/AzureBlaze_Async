@@ -11,9 +11,9 @@ export type Post = {
   description: string;
   category: string;
   publishedAt: string;
-  updatedAt?: string;
+  updatedAt?: string | undefined;
   published: boolean;
-  tags?: string[];
+  tags?: string[] | undefined;
   content: string;
   readingTime: number;
 };
