@@ -12,6 +12,9 @@ export type PostSummary = {
   seoDescription: string;
 };
 export type Post = PostSummary & { content: string; readingTime: number };
+export function shouldShowWriting(posts: readonly unknown[], error: string | null) {
+  return error === null && posts.length > 0;
+}
 export const WPM = 220;
 export function readingTime(text: string) {
   const words = text.replace(/[#>*_`\-\[\]()!]/g, ' ').split(/\s+/).filter(Boolean).length;

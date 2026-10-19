@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import heroBg from "@/assets/web-page-background.webp";
 import { ButtonLink, SITE, SiteFooter, SiteHeader } from "@/components/site";
-import { formatDate } from "@/lib/posts";
+import { formatDate, shouldShowWriting } from "@/lib/posts";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { postsQuery } from "@/lib/posts.queries";
 
@@ -83,18 +83,13 @@ function Index() {
           </div>
         </section>
 
-        <section id="writing" className="fade-in section-y scroll-mt-16 border-t border-border">
+        {shouldShowWriting(posts, error) && <section id="writing" className="fade-in section-y scroll-mt-16 border-t border-border">
           <div className="container-site">
             <p className="text-eyebrow text-primary">Writing</p>
             <h2 className="text-section mt-2 text-foreground">Ideas worth exploring.</h2>
             <p className="text-lead mt-3 max-w-xl text-muted-foreground">
               Thoughts on technology, accepted limitations, and possibilities beyond the present.
             </p>
-            {error ? (
-              <p role="status" className="mt-10 text-subtle">{error}</p>
-            ) : posts.length === 0 ? (
-              <p className="mt-10 text-subtle">New writing is on its way.</p>
-            ) : (
               <ul className="mt-10 grid gap-5 md:grid-cols-2">
                 {posts.map((p) => (
                   <li key={p.slug} className="group relative flex flex-col rounded-xl border border-border bg-surface p-7 transition-colors hover:border-primary-line hover:bg-card">
@@ -113,9 +108,8 @@ function Index() {
                   </li>
                 ))}
               </ul>
-            )}
           </div>
-        </section>
+        </section>}
 
         <section className="fade-in section-y border-t border-border">
           <div className="container-site summary-box px-6 py-14 text-center">

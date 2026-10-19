@@ -2,10 +2,22 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import ReactMarkdown from 'react-markdown';
 import { getPublishedPost, listPublishedPosts } from '../lib/posts.server';
+import { shouldShowWriting } from '../lib/posts';
 
 const connection = { url: 'https://editor.example.test', key: 'sb_publishable_test' };
 const row = { title: 'Published post', slug: 'published-post', excerpt: 'An excerpt', category: 'Systems', published_at: '2026-10-19T00:00:00Z', updated_at: '2026-10-19T00:00:00Z', content_markdown: '# Database article', cover_image_path: null, social_image_path: null };
 afterEach(() => vi.unstubAllGlobals());
+describe('Writing visibility', () => {
+  it('hides writing when no blogs are available', () => {
+    expect(shouldShowWriting([], null)).toBe(false);
+  });
+  it('hides writing when loading fails even if cached posts exist', () => {
+    expect(shouldShowWriting([row], 'Load failed')).toBe(false);
+  });
+  it('shows writing when published blogs are loaded', () => {
+    expect(shouldShowWriting([row], null)).toBe(true);
+  });
+});
 describe('Published-only database reader', () => {
   it('requests published rows only without sending a publishable key as a bearer token', async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify([row])));
