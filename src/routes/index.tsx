@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import heroBg from "@/assets/web-page-background.webp";
 import { ButtonLink, SITE, SiteFooter, SiteHeader } from "@/components/site";
-import { formatDate, posts } from "@/lib/posts";
+import { formatDate } from "@/lib/posts";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { postsQuery } from "@/lib/posts.queries";
 
 export const Route = createFileRoute("/")({
+  loader: ({ context }) => context.queryClient.ensureQueryData(postsQuery),
   head: () => ({
     meta: [
       { title: "AzureBlaze — Question. Build. Evolve." },
@@ -18,6 +21,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { data: { posts, error } } = useSuspenseQuery(postsQuery);
   return (
     <>
       <SiteHeader />
@@ -35,7 +39,7 @@ function Index() {
           </div>
           <div className="container-site flex w-full flex-col items-center py-20 text-center lg:py-28">
             <p className="text-eyebrow flex items-center gap-2 text-primary"><span className="eyebrow-dot" aria-hidden="true" />Anonymous builder · Technology · Ideas</p>
-            <h1 className="text-hero mt-5 max-w-3xl text-foreground">The future isn't a limit. It's a <span className="text-primary">question.</span></h1>
+            <h1 className="hero-headline mt-5 w-full text-foreground"><span className="block whitespace-nowrap">The future isn't the limit.</span><span className="block whitespace-nowrap">It's a <span className="text-primary">question.</span></span></h1>
             <p className="text-lead mt-6 max-w-xl text-muted-foreground">
               Question accepted limitations. Explore what technology could become. Build what doesn't exist yet.
             </p>
@@ -54,7 +58,7 @@ function Index() {
             {[
               ["Identity", "Anonymous"],
               ["Focus", "Technology & systems"],
-              ["Articles", String(posts.length)],
+              ["Articles", error ? "—" : String(posts.length)],
               ["Motto", "Question. Build. Evolve."],
             ].map(([k, v], i) => (
               <div key={k} className={`py-4 ${i ? "md:border-l md:border-border md:pl-5" : ""}`}>
@@ -86,12 +90,15 @@ function Index() {
             <p className="text-lead mt-3 max-w-xl text-muted-foreground">
               Thoughts on technology, accepted limitations, and possibilities beyond the present.
             </p>
-            {posts.length === 0 ? (
+            {error ? (
+              <p role="status" className="mt-10 text-subtle">{error}</p>
+            ) : posts.length === 0 ? (
               <p className="mt-10 text-subtle">New writing is on its way.</p>
             ) : (
               <ul className="mt-10 grid gap-5 md:grid-cols-2">
                 {posts.map((p) => (
                   <li key={p.slug} className="group relative flex flex-col rounded-xl border border-border bg-surface p-7 transition-colors hover:border-primary-line hover:bg-card">
+                    {p.coverUrl && <img src={p.coverUrl} alt={p.coverAlt} loading="lazy" className="mb-5 aspect-video w-full rounded-lg object-cover" />}
                     <p className="text-eyebrow text-primary">{p.category}</p>
                     <h3 className="mt-3 text-lg font-semibold leading-snug tracking-normal text-foreground">
                       <Link to="/blog/$slug" params={{ slug: p.slug }} className="after:absolute after:inset-0 after:rounded-xl">
@@ -100,7 +107,7 @@ function Index() {
                     </h3>
                     <p className="mt-3 flex-1 text-muted-foreground">{p.description}</p>
                     <div className="mt-6 flex items-center justify-between text-sm text-subtle">
-                      <span>{formatDate(p.publishedAt)} · {p.readingTime} min read</span>
+                      <span>{formatDate(p.publishedAt)}</span>
                       <span aria-hidden="true" className="text-primary transition-transform group-hover:translate-x-1">Read article →</span>
                     </div>
                   </li>
