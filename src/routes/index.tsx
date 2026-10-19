@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import heroBg from "@/assets/web-page-background.png.asset.json";
+import heroBg from "@/assets/web-page-background.webp";
 import { ButtonLink, SITE, SiteFooter, SiteHeader } from "@/components/site";
 import { formatDate, posts } from "@/lib/posts";
 
@@ -25,7 +25,7 @@ function Index() {
         <section className="relative isolate flex min-h-[calc(100svh-4rem)] items-center overflow-hidden">
           <div className="absolute inset-0 -z-10" aria-hidden="true">
             <img
-              src={heroBg.url}
+              src={heroBg}
               alt=""
               fetchPriority="high"
               className="h-full w-full object-cover object-center"

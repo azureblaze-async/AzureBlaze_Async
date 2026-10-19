@@ -1,4 +1,4 @@
-import logo from "@/assets/blaze-logo.png.asset.json";
+import logo from "@/assets/blaze-logo.png";
 import { Link } from "@tanstack/react-router";
 import {
   FaGithub,
@@ -25,7 +25,7 @@ export const SITE = {
 };
 
 export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
-  return <img src={logo.url} alt="" width={32} height={32} className={className} />;
+  return <img src={logo} alt="" width={32} height={32} className={className} />;
 }
 
 function Brand() {
