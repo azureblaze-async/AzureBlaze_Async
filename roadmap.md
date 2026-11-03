@@ -1,4 +1,7 @@
 # Requested changes
+- [ ] Normalize frontmatter and page metadata without rewriting article bodies.
+- [ ] Add Blog, About, RSS, sitemap entries, navigation, sharing image and styled 404.
+- [ ] Configure static generation and verify HTML, feeds, routes and tests.
 - [x] Hide the entire Writing section for empty or failed reads and provide connection variable names.
 - [x] Put the hero headline on two deliberate lines.
 - [x] Replace file-based article reads with the existing editor database, configured at deployment.
