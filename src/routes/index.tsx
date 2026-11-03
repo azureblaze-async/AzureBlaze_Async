@@ -4,20 +4,18 @@ import { ButtonLink, SITE, SiteFooter, SiteHeader } from "@/components/site";
 import { formatDate, shouldShowWriting } from "@/lib/posts";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { postsQuery } from "@/lib/posts.queries";
+import { pageHead, metaDescription, SITE_ORIGIN } from '@/lib/seo';
+import { PageError, NotFoundPage } from '@/components/page-boundaries';
 
 export const Route = createFileRoute("/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(postsQuery),
   head: () => ({
-    meta: [
-      { title: "AzureBlaze — Question. Build. Evolve." },
-      { name: "description", content: "An anonymous builder exploring technology, accepted limitations, and what could be built next." },
-      { property: "og:title", content: "AzureBlaze — Question. Build. Evolve." },
-      { property: "og:description", content: "An anonymous builder exploring technology, accepted limitations, and what could be built next." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+    ...pageHead('/', 'AzureBlaze | Questioning the foundations of technology', metaDescription('AzureBlaze questions the foundations of technology, engineering and everyday systems. Explore accepted limitations, new ideas and what could be built next.', 'AzureBlaze')),
+    scripts: [{ type: 'application/ld+json', children: JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'AzureBlaze', url: `${SITE_ORIGIN}/`, description: 'An anonymous builder questioning the foundations of technology.' }) }],
   }),
   component: Index,
+  errorComponent: PageError,
+  notFoundComponent: NotFoundPage,
 });
 
 function Index() {
