@@ -25,7 +25,7 @@ export const SITE = {
 };
 
 export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
-  return <img src={logo} alt="" width={32} height={32} className={className} />;
+  return <img src={logo} alt="AzureBlaze A logo" width={32} height={32} className={className} />;
 }
 
 function Brand() {
@@ -42,9 +42,9 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
       <nav aria-label="Main" className="container-site flex h-16 items-center justify-between">
         <Brand />
-        <div className="flex items-center gap-6 text-sm text-muted-foreground">
-          <Link to="/" hash="about" className="transition-colors hover:text-foreground">About</Link>
-          <Link to="/" hash="writing" className="transition-colors hover:text-foreground">Writing</Link>
+        <div className="flex items-center gap-4 text-sm text-muted-foreground sm:gap-6">
+          <Link to="/about" className="transition-colors hover:text-foreground">About</Link>
+          <Link to="/blog" className="transition-colors hover:text-foreground">Blog</Link>
         </div>
       </nav>
     </header>
@@ -60,6 +60,7 @@ export function SiteFooter() {
           <p className="text-sm text-subtle">{SITE.tagline}</p>
         </div>
         <div className="flex flex-col gap-3 text-sm text-subtle sm:items-end">
+          <nav aria-label="Footer" className="flex gap-6"><Link to="/blog" className="hover:text-primary">Blog</Link><Link to="/about" className="hover:text-primary">About</Link><a href="/rss.xml" className="hover:text-primary">RSS</a></nav>
           {SITE.socials.length > 0 && (
             <ul className="flex gap-2">
               {SITE.socials.map((s) => (

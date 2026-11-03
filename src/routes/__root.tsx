@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { NotFoundPage } from '@/components/page-boundaries';
 
 function NotFoundComponent() {
   return (
@@ -78,8 +79,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "AzureBlaze" },
-      { name: "description", content: "AzureBlaze — an anonymous builder exploring technology and ideas." },
       { name: "theme-color", content: "#080A0F" },
       { property: "og:site_name", content: "AzureBlaze" },
       { property: "og:type", content: "website" },
@@ -94,11 +93,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+      { rel: 'alternate', type: 'application/rss+xml', title: 'AzureBlaze', href: 'https://www.azureblaze.space/rss.xml' },
     ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
-  notFoundComponent: NotFoundComponent,
+  notFoundComponent: NotFoundPage,
   errorComponent: ErrorComponent,
 });
 

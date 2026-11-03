@@ -1,4 +1,6 @@
 import { mediaUrl, readingTime, type Post, type PostSummary } from './posts';
+import { cleanLabel, metaDescription, unbrandedTitle } from './seo';
+import { parseFrontmatter } from './frontmatter';
 
 export const LIST_COLS = 'title,slug,excerpt,category,cover_image_path,cover_image_alt,published_at,updated_at,seo_title,seo_description,social_image_path';
 type Row = {
@@ -33,12 +35,13 @@ async function query(connection: BlogConnection, params: URLSearchParams): Promi
   return { rows: rows as Row[], base };
 }
 function summary(row: Row, base: string): PostSummary {
+  const title = unbrandedTitle(row.title);
   return {
-    title: row.title, slug: row.slug, description: row.excerpt ?? '', category: row.category ?? '',
+    title, slug: row.slug, description: cleanLabel(row.excerpt ?? ''), category: row.category ?? '',
     publishedAt: row.published_at, updatedAt: row.updated_at,
-    coverUrl: mediaUrl(base, row.cover_image_path), coverAlt: row.cover_image_alt ?? '',
+    coverUrl: mediaUrl(base, row.cover_image_path), coverAlt: row.cover_image_alt || `Cover for ${title}`,
     socialUrl: mediaUrl(base, row.social_image_path ?? row.cover_image_path),
-    seoTitle: row.seo_title || row.title, seoDescription: row.seo_description || row.excerpt || '',
+    seoTitle: unbrandedTitle(row.seo_title || title), seoDescription: metaDescription(row.seo_description || row.excerpt || '', title),
   };
 }
 export async function listPublishedPosts(connection: BlogConnection): Promise<PostSummary[]> {
@@ -55,6 +58,9 @@ export async function getPublishedPost(slug: string, connection: BlogConnection)
   const { rows, base } = await query(connection, new URLSearchParams({ select: `${LIST_COLS},content_markdown`, slug: `eq.${slug}`, limit: '1' }));
   const row = rows[0];
   if (!row) return null;
-  const content = row.content_markdown ?? '';
-  return { ...summary(row, base), content, readingTime: readingTime(content) };
+  const { content, data } = parseFrontmatter(row.content_markdown ?? '');
+  const normalized = summary(row, base);
+  const title = unbrandedTitle(typeof data['title'] === 'string' ? data['title'] : normalized.title);
+  const description = cleanLabel(row.excerpt || (typeof data['description'] === 'string' ? data['description'] : normalized.description));
+  return { ...normalized, title, description, seoTitle: unbrandedTitle(row.seo_title || title), seoDescription: metaDescription(row.seo_description || description || content, title), content, readingTime: readingTime(content) };
 }

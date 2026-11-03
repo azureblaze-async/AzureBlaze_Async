@@ -27,7 +27,10 @@ export const readPost = createServerFn({ method: 'GET' })
       const { getPublishedPost, listPublishedPosts } = await import('./posts.server');
       const post = await getPublishedPost(data.slug, connection);
       const related = post ? await listPublishedPosts(connection).catch(() => []) : [];
-      return { post, related: related.filter(p => p.slug !== data.slug && p.category === post?.category).slice(0, 2), error: null };
+      const candidates = related.filter(p => p.slug !== data.slug);
+      const sameCategory = candidates.filter(p => p.category === post?.category);
+      const others = candidates.filter(p => p.category !== post?.category);
+      return { post, related: [...sameCategory, ...others].slice(0, 2), error: null };
     } catch {
       return { post: null, related: [], error: 'This article is temporarily unavailable. Please try again later.' };
     }

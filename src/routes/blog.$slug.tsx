@@ -7,6 +7,8 @@ import { formatDate } from "@/lib/posts";
 import { postQuery } from "@/lib/posts.queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { pageHead, SITE_ORIGIN, SHARE_IMAGE } from '@/lib/seo';
+import { PageError, NotFoundPage } from '@/components/page-boundaries';
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params, context }) => {
@@ -14,7 +16,7 @@ export const Route = createFileRoute("/blog/$slug")({
     if (!result.error && !result.post) throw notFound();
     return result;
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     const p = loaderData?.post;
     if (!p) return { meta: [
       { title: "Article unavailable — AzureBlaze" }, { name: "robots", content: "noindex" },
@@ -24,16 +26,11 @@ export const Route = createFileRoute("/blog/$slug")({
       { property: "og:type", content: "article" }, { name: "twitter:card", content: "summary" },
     ] };
     return {
+      ...pageHead(`/blog/${encodeURIComponent(params.slug)}`, `${p.seoTitle} | AzureBlaze`, p.seoDescription, 'article'),
       meta: [
-        { title: `${p.seoTitle} — AzureBlaze` },
-        { name: "description", content: p.seoDescription },
-        { property: "og:title", content: p.seoTitle },
-        { property: "og:description", content: p.seoDescription },
-        { property: "og:type", content: "article" },
+        ...pageHead(`/blog/${encodeURIComponent(params.slug)}`, `${p.seoTitle} | AzureBlaze`, p.seoDescription, 'article').meta,
         { property: "article:published_time", content: p.publishedAt },
         ...(p.updatedAt ? [{ property: "article:modified_time", content: p.updatedAt }] : []),
-        { name: "twitter:card", content: "summary_large_image" },
-        ...(p.socialUrl ? [{ property: "og:image", content: p.socialUrl }, { name: "twitter:image", content: p.socialUrl }] : []),
       ],
       scripts: [{
         type: "application/ld+json",
@@ -45,21 +42,15 @@ export const Route = createFileRoute("/blog/$slug")({
           datePublished: p.publishedAt,
           dateModified: p.updatedAt ?? p.publishedAt,
           author: { "@type": "Person", name: "AzureBlaze" },
+          url: `${SITE_ORIGIN}/blog/${encodeURIComponent(params.slug)}`,
+          image: SHARE_IMAGE,
         }),
       }],
     };
   },
   component: Article,
-  notFoundComponent: () => (
-    <>
-      <SiteHeader />
-      <main className="container-site py-32 text-center">
-        <h1 className="text-section">Article not found</h1>
-        <Link to="/" hash="writing" className="mt-6 inline-block text-primary">← Back to writing</Link>
-      </main>
-      <SiteFooter />
-    </>
-  ),
+  errorComponent: PageError,
+  notFoundComponent: NotFoundPage,
 });
 
 function ShareButton({ title }: { title: string }) {
@@ -106,8 +97,9 @@ function Article() {
           </header>
           {post.coverUrl && <img src={post.coverUrl} alt={post.coverAlt} className="mt-10 aspect-video w-full rounded-lg object-cover" />}
           <div className="prose-article mt-12 border-t border-border pt-10">
-            <ReactMarkdown skipHtml remarkPlugins={[remarkGfm]} components={{ h1: ({ children }) => <h2>{children}</h2>, img: ({ src, alt }) => <img src={src} alt={alt ?? ""} loading="lazy" />, a: ({ href, children }) => <a href={href} {...(href?.startsWith("https://") ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{children}</a> }}>{post.content}</ReactMarkdown>
+            <ReactMarkdown skipHtml remarkPlugins={[remarkGfm]} components={{ h1: ({ children }) => <h2>{children}</h2>, img: ({ src, alt }) => <img src={src} alt={alt || `Illustration for ${post.title}`} loading="lazy" />, a: ({ href, children }) => <a href={href} {...(href?.startsWith("https://") ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{children}</a> }}>{post.content}</ReactMarkdown>
           </div>
+          <p className="mt-8 text-sm text-muted-foreground">New questions every week. <a href="/rss.xml" className="text-primary hover:text-primary-hover">Follow via RSS</a></p>
           <div className="mt-14 flex items-center justify-between border-t border-border pt-8">
             <Link to="/" hash="writing" className="text-sm text-primary hover:text-primary-hover">← Back to writing</Link>
             <ShareButton title={post.title} />
