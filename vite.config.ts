@@ -5,11 +5,12 @@
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
-import { loadEnv } from 'vite';
+import { loadEnv, type ConfigEnv } from 'vite';
 import { listPublishedPosts } from './src/lib/posts.server';
 
 const MAX_PRERENDER_PAGES = 10000;
-export default defineConfig(async ({ command, mode }) => {
+export default async (configEnv: ConfigEnv) => {
+  const { command, mode } = configEnv;
   const pages = [{ path: '/' }, { path: '/blog' }, { path: '/about' }];
   if (command === 'build') {
     const env = loadEnv(mode, process.cwd(), '');
@@ -26,11 +27,11 @@ export default defineConfig(async ({ command, mode }) => {
       console.warn('Blog connection is missing: static post generation cannot run. Only home, Blog and About will be prerendered.');
     }
   }
-  return { tanstackStart: {
+  return defineConfig({ tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
     pages,
     prerender: { enabled: true, autoStaticPathsDiscovery: false },
-  } };
-});
+  } })(configEnv);
+};

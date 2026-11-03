@@ -11,7 +11,7 @@ export function plainText(value: string) {
 }
 export function metaDescription(value: string, title: string) {
   let text = plainText(value);
-  if (text.length < 140) text += `${text ? ' ' : ''}${unbrandedTitle(title)} explores the foundations of technology, engineering and everyday systems through questions from anonymous builder AzureBlaze.`;
+  if (text.length < 140) text += `${text ? ' ' : ''}${unbrandedTitle(title)} explores the foundations of technology, engineering and everyday systems through ideas and questions from anonymous builder AzureBlaze.`;
   if (text.length <= 160) return text;
   const end = text.slice(0, 157);
   const boundary = end.lastIndexOf(' ');
