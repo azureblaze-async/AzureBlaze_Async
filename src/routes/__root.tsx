@@ -80,6 +80,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#080A0F" },
+      { name: "msvalidate.01", content: "C7BA00F3AC6C6E6F22AE1BF4C001D4B4" },
       { property: "og:site_name", content: "AzureBlaze" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
